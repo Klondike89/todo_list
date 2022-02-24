@@ -9,9 +9,11 @@ from django.views.generic import (
 )
 from .models import ToDoList, ToDoItem
 
+
 class ListListView(ListView):
     model = ToDoList
     template_name = "todo_app/index.html"
+
 
 class ItemListView(ListView):
     model = ToDoItem
@@ -25,6 +27,7 @@ class ItemListView(ListView):
         context["todo_list"] = ToDoList.objects.get(id=self.kwargs["list_id"])
         return context
 
+
 class ListCreate(CreateView):
     model = ToDoList
     fields = ["title"]
@@ -34,13 +37,14 @@ class ListCreate(CreateView):
         context["title"] = "Add a new list"
         return context
 
+
 class ItemCreate(CreateView):
     model = ToDoItem
     fields = [
         "todo_list",
         "title",
         "description",
-        "due_date", 
+        "due_date",
     ]
 
     def get_initial(self):
@@ -48,7 +52,7 @@ class ItemCreate(CreateView):
         todo_list = ToDoList.objects.get(id=self.kwargs["list_id"])
         initial_data["todo_list"] = todo_list
         return initial_data
-    
+
     def get_context_data(self):
         context = super(ItemCreate, self).get_context_data()
         todo_list = ToDoList.objects.get(id=self.kwargs["list_id"])
@@ -58,6 +62,7 @@ class ItemCreate(CreateView):
 
     def get_sucess_url(self):
         return reverse("list", args=[self.object.todo_list_id])
+
 
 class ItemUpdate(UpdateView):
     model = ToDoItem
@@ -77,20 +82,21 @@ class ItemUpdate(UpdateView):
     def get_sucess_url(self):
         return reverse("list", args=[self.object.todo_list_id])
 
+
 class ListDelete(DeleteView):
     model = ToDoList
     # You have to use reverse_lazy() instead of reverse(),
     # as the urls are not loaded when the file is imported.
     success_url = reverse_lazy("index")
 
+
 class ItemDelete(DeleteView):
     model = ToDoItem
 
     def get_sucess_url(self):
         return reverse_lazy("list", args=[self.kwargs["list_id"]])
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["todo_list"] = self.object.todo_list
         return context
-        
