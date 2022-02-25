@@ -71,6 +71,7 @@ class ItemUpdate(UpdateView):
         "title",
         "description",
         "due_date",
+        "completed_value"
     ]
 
     def get_context_data(self):
